@@ -1,6 +1,7 @@
 {
   "name": "flex-develop/flexmo",
   "description": "Flexmo Framework",
+    "license": "MIT",
   "require": {
     "tracy/tracy": "^2.7"
   },
