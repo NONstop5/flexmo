@@ -9,5 +9,11 @@
       "name": "NON$top",
       "email": "non_2002@mail.ru"
     }
-  ]
+  ],
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/App",
+      "Flexmo\\": "src/vendor/flexmo/src/Flexmo"
+    }
+  }
 }

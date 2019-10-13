@@ -1,26 +1,26 @@
 <?php
-error_reporting(E_ALL);
 
-use vendor\flexmo\src\core\Router;
+use Flexmo\Router;
+use Tracy\Debugger;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+Debugger::enable();
 
 define('PUBLIC', dirname(__DIR__));
-define('CORE', dirname(__DIR__) . '/vendor/core');
-define('ROOT', dirname(__DIR__));
-define('APP', dirname(__DIR__) . 'app');
+define('CORE', dirname(__DIR__) . '/vendor/flexmo/src/core');
+define('APP_ROOT', dirname(__DIR__));
+define('CONTROLLERS_PATH', dirname(__DIR__) . '/app/Controllers/');
+define('VIEWS_PATH', dirname(__DIR__) . '/app/Views/');
+define('MODELS_PATH', dirname(__DIR__) . '/app/Models/');
 
 $query = rtrim(substr($_SERVER['REQUEST_URI'], 1), '/');
 
-spl_autoload_register(function ($class) {
-    $classFullPath = ROOT . '/' . str_replace('\\', '/', $class) . '.php';
-
-    if (is_file($classFullPath)) {
-        require_once $classFullPath;
-    }
-});
-
+//Router::add('^page/(?P<action>[a-z-]+)/(?P<alias>[a-z-]+)$', ['controller' => 'Page']);
 
 // default routs
 Router::add('^$', ['controller' => 'Main', 'action' => 'index']);
 Router::add('^(?P<controller>[a-z-]+)\/?(?P<action>[a-z-]+)?$');
+
+bdump(Router::getRoutes());
 
 Router::dispatch($query);
