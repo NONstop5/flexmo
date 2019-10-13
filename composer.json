@@ -1,0 +1,13 @@
+{
+  "name": "flex-develop/flexmo",
+  "description": "Flexmo Framework",
+  "require": {
+    "tracy/tracy": "^2.7"
+  },
+  "authors": [
+    {
+      "name": "NON$top",
+      "email": "non_2002@mail.ru"
+    }
+  ]
+}
