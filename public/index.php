@@ -3,7 +3,7 @@
 use Flexmo\Router;
 use Tracy\Debugger;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once '../vendor/autoload.php';
 Debugger::enable();
 
 define('PUBLIC', dirname(__DIR__));
@@ -17,10 +17,10 @@ $query = rtrim(substr($_SERVER['REQUEST_URI'], 1), '/');
 
 //Router::add('^page/(?P<action>[a-z-]+)/(?P<alias>[a-z-]+)$', ['controller' => 'Page']);
 
-// default routs
+// default routes
 Router::add('^$', ['controller' => 'Main', 'action' => 'index']);
 Router::add('^(?P<controller>[a-z-]+)\/?(?P<action>[a-z-]+)?$');
 
-bdump(Router::getRoutes());
+//bdump(Router::getRoutes());
 
 Router::dispatch($query);
