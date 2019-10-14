@@ -2,9 +2,8 @@
 
 namespace App\Controllers;
 
-use Flexmo\Abstracts\Controller;
 
-class Main extends Controller
+class Main extends AppController
 {
 
 }

@@ -2,9 +2,8 @@
 
 namespace App\Controllers;
 
-use Flexmo\Abstracts\Controller;
 
-class Page extends Controller
+class Page extends AppController
 {
     public function viewAction()
     {
