@@ -35,7 +35,7 @@ class Router
      */
     private function addDefaultRoutes()
     {
-        $this->addRoute('^$', ['controller' => 'Main', 'action' => 'index']);
+        $this->addRoute('^$', ['controller' => 'Main', 'action' => 'index', 'view' => 'index']);
         $this->addRoute('^(?P<controller>[a-z-]+)\/?(?P<action>[a-z-]+)?$');
     }
 
