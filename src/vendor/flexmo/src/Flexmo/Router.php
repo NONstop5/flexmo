@@ -4,15 +4,39 @@ namespace Flexmo;
 
 class Router
 {
+    /** @var string Адресная строка */
+    protected $url;
+
     /** @var array Таблица маршрутов */
-    protected static $routes = [];
+    protected $routes = [];
 
     /** @var array Текущий маршрут */
-    protected static $currentRoute = [];
+    protected $route = [];
 
-    public static function add($regexp, $route = [])
+    public function __construct()
     {
-        self::$routes[$regexp] = $route;
+        $this->url = rtrim(substr($_SERVER['REQUEST_URI'], 1), '/');
+        $this->addDefaultRoutes();
+    }
+
+    /**
+     * Добавляет маршрут в таблицу маршрутов
+     *
+     * @param $regexp
+     * @param array $route
+     */
+    private function addRoute($regexp, $route = [])
+    {
+        $this->routes[$regexp] = $route;
+    }
+
+    /**
+     * Добавляет маршруты по-умолчанию
+     */
+    private function addDefaultRoutes()
+    {
+        $this->addRoute('^$', ['controller' => 'Main', 'action' => 'index']);
+        $this->addRoute('^(?P<controller>[a-z-]+)\/?(?P<action>[a-z-]+)?$');
     }
 
     /**
@@ -20,9 +44,9 @@ class Router
      *
      * @return array
      */
-    public static function getRoutes()
+    public function getRoutes()
     {
-        return self::$routes;
+        return $this->routes;
     }
 
     /**
@@ -30,30 +54,37 @@ class Router
      *
      * @return array
      */
-    public static function getCurrentRoute()
+    public function getRoute()
     {
-        return self::$currentRoute;
+        return $this->route;
     }
 
     /**
      * Сравнивает строку URL с таблицей маршрутов
      *
-     * @param string $url
      * @return bool
      */
-    private static function matchRoute($url)
+    private function matchRoute()
     {
-        foreach (self::$routes as $pattern => $route) {
-            if (preg_match("#$pattern#i", $url, $matches)) {
+        foreach ($this->routes as $pattern => $route) {
+            if (preg_match("#$pattern#i", $this->url, $matches)) {
                 foreach ($matches as $key => $value) {
                     if (is_string($key)) {
-                        $route[$key] = self::convertToCamelCase($value);
+                        if ($key === 'controller') {
+                            $route[$key] = $this->convertToCamelCase($value);
+                        } elseif ($key === 'action') {
+                            $route[$key] = lcfirst($this->convertToCamelCase($value));
+                            $route['view'] = $value;
+                        }
                     }
                 }
                 if (!isset($route['action'])) {
                     $route['action'] = 'index';
+                    $route['view'] = $route['action'];
                 }
-                self::$currentRoute = $route;
+
+                $this->route = $route;
+
                 return true;
             }
         }
@@ -63,17 +94,15 @@ class Router
 
     /**
      * Перенаправляет URL по маршруту
-     *
-     * @param string $url
      */
-    public static function dispatch($url)
+    public function dispatch()
     {
-        if (self::matchRoute($url)) {
-            $controllerClassName = 'App\Controllers\\' . self::$currentRoute['controller'];
-            bdump($controllerClassName);
+        if ($this->matchRoute()) {
+            $controllerClassName = 'App\Controllers\\' . $this->route['controller'];
+
             if (class_exists($controllerClassName)) {
-                $controllerObject = new $controllerClassName(self::$currentRoute);
-                $controllerAction = lcfirst(self::convertToCamelCase(self::$currentRoute['action'])) . 'Action';
+                $controllerObject = new $controllerClassName($this->route);
+                $controllerAction = $this->convertToCamelCase($this->route['action']) . ACTION_POSTFIX;
 
                 if (method_exists($controllerObject, $controllerAction)) {
                     $controllerObject->$controllerAction();
@@ -85,7 +114,7 @@ class Router
             }
         } else {
             echo 'NOT MATCH!';
-            //self::errorPage();
+            //$this->errorPage();
         }
     }
 
@@ -95,7 +124,7 @@ class Router
      * @param $className
      * @return mixed
      */
-    private static function convertToCamelCase($className)
+    private function convertToCamelCase($className)
     {
         return str_replace('-', '', ucwords($className, '-'));
     }
@@ -103,7 +132,7 @@ class Router
     /**
      * Выводит страницу 404
      */
-    private static function errorPage()
+    private function errorPage()
     {
         header('Location: ' . $_SERVER['REQUEST_URI'], true, 404);
         print('Страница не обнаружена!');
