@@ -1,26 +1,40 @@
 <?php
 
-
 namespace Flexmo\Abstracts;
 
+use Flexmo\Renderer;
 
 abstract class Controller
 {
-    public $route = [];
-    public $view;
+    /** @var array Текущий маршрут */
+    protected $route = [];
+
+    /** @var string Текущий вид */
+    protected $view;
+    protected $pageTitle = '';
+    protected $layoutName = DEFAULT_LAYOUT;
 
     public function __construct($route)
     {
         $this->route = $route;
-        bdump($route);
-//        $this->view = $route['action'];
-//
-//        include_once VIEWS_PATH . $route['controller'] . '/' . $this->view . '.php';
+        $this->view = $route['view'];
+    }
+
+    public function render()
+    {
+        $viewFile = VIEW_PATH . $this->route['controller'] . DIRECTORY_SEPARATOR . $this->view . '.php';
+        $layoutFile = LAYOUTS_PATH . $this->layoutName . '.php';
+
+        $content = Renderer::getTemplate($viewFile, []);
+        $resultHtml = Renderer::getTemplate($layoutFile, [
+            'pageTitle' => $this->pageTitle,
+            'content' => $content
+        ]);
+        echo $resultHtml;
     }
 
     public function indexAction()
     {
-        echo get_called_class() . '<br>';
-        echo __FUNCTION__ . '<br>';
+        $this->render();
     }
 }
