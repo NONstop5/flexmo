@@ -9,10 +9,20 @@ abstract class Controller
     /** @var array Текущий маршрут */
     protected $route = [];
 
+    /** @var string Заголовок страницы */
+    protected $pageTitle = '';
+
+    /** @var string Layout страницы */
+    protected $layoutName = DEFAULT_LAYOUT;
+
     /** @var string Текущий вид */
     protected $view;
-    protected $pageTitle = '';
-    protected $layoutName = DEFAULT_LAYOUT;
+
+    /** @var array Массив переменных для layout */
+    protected $layoutVariables = [];
+
+    /** @var array Массив переменных для view */
+    protected $viewVariables = [];
 
     public function __construct($route)
     {
@@ -25,11 +35,12 @@ abstract class Controller
         $viewFile = VIEW_PATH . $this->route['controller'] . DIRECTORY_SEPARATOR . $this->view . '.php';
         $layoutFile = LAYOUTS_PATH . $this->layoutName . '.php';
 
-        $content = Renderer::getTemplate($viewFile, []);
-        $resultHtml = Renderer::getTemplate($layoutFile, [
-            'pageTitle' => $this->pageTitle,
-            'content' => $content
-        ]);
+        $content = Renderer::getTemplate($viewFile, $this->viewVariables);
+        $resultHtml = Renderer::getTemplate($layoutFile, array_merge(
+            $this->layoutVariables,
+            ['pageTitle' => $this->pageTitle],
+            ['content' => $content]
+        ));
         echo $resultHtml;
     }
 
