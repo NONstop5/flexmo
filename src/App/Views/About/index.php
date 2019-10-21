@@ -1,1 +1,1 @@
-<h1>About->index</h1>
+<h1>Вьюшка About/index</h1>

@@ -10,14 +10,14 @@
 </head>
 <body>
 
-<h1>Default layout</h1>
+<h1>Layout1</h1>
 <div class="row">
     <div class="col-12 card">
-        <div class="card-header">Header</div>
+        <div class="card-header bg-success text-white">Header</div>
         <div class="card-body">
             <?php echo $content ?>
         </div>
-        <div class="card-footer">Footer</div>
+        <div class="card-footer bg-success text-white">Footer</div>
     </div>
 </div>
 
