@@ -17,7 +17,7 @@
             <a class="nav-link" href="/about">О нас</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/catalog">Каталог</a>
+            <a class="nav-link active" href="/catalog">Каталог</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/contacts">Контакты</a>
@@ -27,7 +27,7 @@
 <div class="container-fluid">
     <h1><?php echo $pageTitle ?></h1>
     <div class="card">
-        <div class="card-header">Header</div>
+        <div class="card-header bg-success text-white">Header</div>
         <div class="card-body">
             <?php echo $content ?>
         </div>

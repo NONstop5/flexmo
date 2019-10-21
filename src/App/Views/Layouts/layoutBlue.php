@@ -20,14 +20,14 @@
             <a class="nav-link" href="/catalog">Каталог</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/contacts">Контакты</a>
+            <a class="nav-link active" href="/contacts">Контакты</a>
         </li>
     </ul>
 </nav>
 <div class="container-fluid">
     <h1><?php echo $pageTitle ?></h1>
     <div class="card">
-        <div class="card-header">Header</div>
+        <div class="card-header bg-primary text-white">Header</div>
         <div class="card-body">
             <?php echo $content ?>
         </div>

@@ -10,17 +10,30 @@
 </head>
 <body>
 
-<h1>Layout1</h1>
-<div class="row">
-    <div class="col-12 card">
-        <div class="card-header bg-success text-white">Header</div>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <a class="navbar-brand" href="/">Logo</a>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link active" href="/about">О нас</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/catalog">Каталог</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/contacts">Контакты</a>
+        </li>
+    </ul>
+</nav>
+<div class="container-fluid">
+    <h1><?php echo $pageTitle ?></h1>
+    <div class="card">
+        <div class="card-header bg-danger text-white">Header</div>
         <div class="card-body">
             <?php echo $content ?>
         </div>
-        <div class="card-footer bg-success text-white">Footer</div>
+        <div class="card-footer">Footer</div>
     </div>
 </div>
-
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
