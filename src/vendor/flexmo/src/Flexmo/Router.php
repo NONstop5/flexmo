@@ -2,6 +2,8 @@
 
 namespace Flexmo;
 
+use Exception;
+
 class Router
 {
     /** @var string Адресная строка */
@@ -40,26 +42,6 @@ class Router
     }
 
     /**
-     * Возвращает таблицу маршрутов
-     *
-     * @return array
-     */
-    public function getRoutes()
-    {
-        return $this->routes;
-    }
-
-    /**
-     * Возвращает текуцщий маршрут
-     *
-     * @return array
-     */
-    public function getRoute()
-    {
-        return $this->route;
-    }
-
-    /**
      * Сравнивает строку URL с таблицей маршрутов
      *
      * @return bool
@@ -71,9 +53,9 @@ class Router
                 foreach ($matches as $key => $value) {
                     if (is_string($key)) {
                         if ($key === 'controller') {
-                            $route[$key] = $this->convertToCamelCase($value);
+                            $route[$key] = Utils::convertToCamelCase($value);
                         } elseif ($key === 'action') {
-                            $route[$key] = lcfirst($this->convertToCamelCase($value));
+                            $route[$key] = lcfirst(Utils::convertToCamelCase($value));
                             $route['view'] = $value;
                         }
                     }
@@ -94,47 +76,17 @@ class Router
 
     /**
      * Перенаправляет URL по маршруту
+     *
+     * @throws Exception
      */
     public function dispatch()
     {
         if ($this->matchRoute()) {
-            $controllerClassName = 'App\Controllers\\' . $this->route['controller'];
-
-            if (class_exists($controllerClassName)) {
-                $controllerObject = new $controllerClassName($this->route);
-                $controllerAction = $this->convertToCamelCase($this->route['action']) . ACTION_POSTFIX;
-
-                if (method_exists($controllerObject, $controllerAction)) {
-                    $controllerObject->$controllerAction();
-                } else {
-                    echo 'No Method!';
-                }
-            } else {
-                echo 'NO Class!';
-            }
+            bdump($this->route);
+            return $this->route;
         } else {
-            echo 'NOT MATCH!';
+            throw new Exception('Нет соответствий таблице маршрутов!');
             //$this->errorPage();
         }
-    }
-
-    /**
-     * Преобразует строку запроса c дифисами в имя класса в CamelCase
-     *
-     * @param $className
-     * @return mixed
-     */
-    private function convertToCamelCase($className)
-    {
-        return str_replace('-', '', ucwords($className, '-'));
-    }
-
-    /**
-     * Выводит страницу 404
-     */
-    private function errorPage()
-    {
-        header('Location: ' . $_SERVER['REQUEST_URI'], true, 404);
-        print('Страница не обнаружена!');
     }
 }
