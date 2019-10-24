@@ -3,7 +3,8 @@
   "description": "Flexmo Framework",
     "license": "MIT",
   "require": {
-    "tracy/tracy": "^2.7"
+      "tracy/tracy": "^2.7",
+      "psr/container": "^1.0"
   },
   "authors": [
     {
