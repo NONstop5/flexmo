@@ -1,6 +1,8 @@
 <?php
 
+
 namespace Flexmo;
+
 
 use Exception;
 
@@ -14,7 +16,7 @@ class Renderer
      * @return string result Возвращает контент страницы с данными
      * @throws Exception
      */
-    public static function getTemplate($template, $data)
+    public static function getTemplate(string $template, array $data = [])
     {
         if (!file_exists($template)) {
             throw new Exception('Шаблон "' . $template . '" не найден!');

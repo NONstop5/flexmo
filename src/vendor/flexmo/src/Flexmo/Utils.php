@@ -7,14 +7,30 @@ namespace Flexmo;
 class Utils
 {
     /**
-     * Преобразует строку запроса c дифисами в имя класса в CamelCase
+     * Преобразует строку из kebab-case в CamelCase
      *
      * @param $className
      * @return mixed
      */
-    public static function convertToCamelCase($className)
+    public static function convertKebabCaseToCamelCase($className)
     {
         return str_replace('-', '', ucwords($className, '-'));
+    }
+
+    /**
+     * Преобразует строку из camelCase в kebab-case
+     *
+     * @param $camelCaseString
+     * @return mixed
+     */
+    public static function convertCamelCaseToKebabCase($camelCaseString)
+    {
+        $parts = preg_split('/(?=[A-Z])/', $camelCaseString);
+        $partsLowerCase = array_map(function ($part) {
+            return lcfirst($part);
+        }, $parts);
+
+        return implode('-', $partsLowerCase);
     }
 
     /**

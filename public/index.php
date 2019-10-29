@@ -4,7 +4,7 @@ use App\App;
 use App\Configs\AppConfig;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-require_once dirname(__DIR__) . '/src/App/Configs/Constants.php';
+
 
 (new App(AppConfig::getAppConfig()));
 
