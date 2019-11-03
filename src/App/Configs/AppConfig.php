@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Configs;
-
 
 class AppConfig
 {
@@ -11,12 +9,15 @@ class AppConfig
     const APP_ROOT = 'APP_ROOT';
     const CONTROLLER_PATH = 'CONTROLLER_PATH';
     const MODEL_PATH = 'MODEL_PATH';
-    const DEFAULT_HTML_PAGE_NAME = 'DEFAULT_HTML_PAGE_NAME';
     const DEFAULT_CONTROLLER_NAME = 'DEFAULT_CONTROLLER_NAME';
     const DEFAULT_ACTION_NAME = 'DEFAULT_ACTION_NAME';
-
     const ACTION_POSTFIX = 'ACTION_POSTFIX';
 
+    /**
+     * Возвращает конфигурацию подключения к БД
+     *
+     * @return array
+     */
     public function getDbConfig()
     {
         return [
@@ -30,6 +31,11 @@ class AppConfig
         ];
     }
 
+    /**
+     * Возвращает конфигурацию приложения
+     *
+     * @return array
+     */
     public function getAppConfig()
     {
         $appConfig[self::PUBLIC_ROOT] = $_SERVER['DOCUMENT_ROOT'];
@@ -37,7 +43,6 @@ class AppConfig
         $appConfig[self::APP_ROOT] = $appConfig[self::ROOT] . '/src/App/';
         $appConfig[self::CONTROLLER_PATH] = $appConfig[self::APP_ROOT] . 'Controllers/';
         $appConfig[self::MODEL_PATH] = $appConfig[self::APP_ROOT] . 'Models/';
-        $appConfig[self::DEFAULT_HTML_PAGE_NAME] = 'htmlPage';
         $appConfig[self::DEFAULT_CONTROLLER_NAME] = 'Main';
         $appConfig[self::DEFAULT_ACTION_NAME] = 'index';
         $appConfig[self::ACTION_POSTFIX] = 'Action';
