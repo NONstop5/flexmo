@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Flexmo;
-
 
 use Exception;
 
@@ -24,7 +22,7 @@ class Renderer
 
         ob_start();
         extract($data);
-        include_once $template;
+        include $template;
 
         return ob_get_clean();
     }

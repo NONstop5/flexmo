@@ -1,67 +1,37 @@
 <?php
 
-
 namespace Flexmo\Abstracts;
 
-
+use App\Components\Layouts\HtmlPage\HtmlPageComponent;
 use App\Configs\AppConfig;
-use Flexmo\Renderer;
+use Flexmo\Container;
 
 abstract class Controller
 {
-    /** @var array Текущий маршрут */
-    protected $route = [];
-    /** @var string Заголовок страницы */
-    protected $pageTitle = '';
-    /** @var string Путь к Layouts */
-    protected $layoutsPath;
-    /** @var string Layout страницы */
-    protected $layoutName;
-    /** @var string Путь до текущего view */
-    protected $viewPath;
-    /** @var string Текущий вид */
-    protected $viewName;
-    /** @var array Массив переменных для layout */
-    protected $layoutVariables = [];
-    /** @var array Массив переменных для view */
-    protected $viewVariables = [];
     /** @var array Массив конфигурации приложения */
     protected $appConfig;
+    /** @var string Заголовок страницы */
+    protected $pageTitle = '';
+    /** @var string Layout страницы */
+    protected $layout = '';
+    protected $container;
 
-    public function __construct(array $route, array $appConfig)
-    {
-        $this->appConfig = $appConfig;
-        $this->route = $route;
-
-        $this->layoutName = $this->layoutName ?: $this->appConfig[AppConfig::DEFAULT_LAYOUT_NAME];
-        $this->viewPath = $this->appConfig[AppConfig::VIEW_PATH] . $this->route['controller'] . DIRECTORY_SEPARATOR;
-        $this->viewName = $route['view'];
+    public function __construct(
+        Container $container
+    ) {
+        $this->appConfig = $container->get(AppConfig::class);
+        $this->container = $container;
     }
 
-    public function render(array $templateData)
+    public function getComponent(array $data)
     {
-//        $content = Renderer::getTemplate($viewFile, $this->viewVariables);
-//        $resultHtml = Renderer::getTemplate($layoutFile, array_merge(
-//            $this->layoutVariables,
-//            ['pageTitle' => $this->pageTitle],
-//            ['content' => $content]
-//        ));
-        echo Renderer::getTemplate($template, $data);
-    }
+        $htmlPage = $this->container->get(HtmlPageComponent::class);
 
-    public function indexAction()
-    {
-        $layoutFile = $this->layoutsPath . $this->layoutName . '.php';
-        $this->render([
-            'mainHtml' => [
-                'Layouts/defaultLayout' => [
-                    'header',
-                    'view' => ['asd' => 'asd']
-                ]
+        echo $htmlPage->getTemplate(
+            [
+                'pageTitle' => $this->pageTitle,
+                'layout' => $this->container->get($this->layout)->getTemplate($data)
             ]
-        ]);
-        $viewFile = $this->viewPath . $this->viewName . '.php';
-
-        $this->render($layoutFile, $viewFile);
+        );
     }
 }

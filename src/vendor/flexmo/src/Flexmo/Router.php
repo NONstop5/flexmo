@@ -14,10 +14,12 @@ class Router
     /** @var array Текущий маршрут */
     protected $route = [];
     protected $appConfig;
+    protected $container;
 
-    public function __construct(array $appConfig)
+    public function __construct(Container $container)
     {
-        $this->appConfig = $appConfig;
+        $this->container = $container;
+        $this->appConfig = $this->container->get(AppConfig::class)->getAppConfig();
         $this->url = rtrim(substr($_SERVER['REQUEST_URI'], 1), '/');
         $this->addDefaultRoutes();
     }
@@ -33,6 +35,11 @@ class Router
         $this->routes[$regexp] = $route;
     }
 
+    public function getRoute()
+    {
+        return $this->route;
+    }
+
     /**
      * Добавляет маршруты по-умолчанию
      */
@@ -40,8 +47,7 @@ class Router
     {
         $this->addRoute('^$', [
             'controller' => $this->appConfig[AppConfig::DEFAULT_CONTROLLER_NAME],
-            'action' => $this->appConfig[AppConfig::DEFAULT_ACTION_NAME],
-            'view' => $this->appConfig[AppConfig::DEFAULT_VIEW_NAME]
+            'action' => $this->appConfig[AppConfig::DEFAULT_ACTION_NAME]
         ]);
         $this->addRoute('^(?P<controller>[a-z-]+)\/?(?P<action>[a-z-]+)?$');
     }
@@ -61,16 +67,16 @@ class Router
                             $route[$key] = Utils::convertKebabCaseToCamelCase($value);
                         } elseif ($key === 'action') {
                             $route[$key] = lcfirst(Utils::convertKebabCaseToCamelCase($value));
-                            $route['view'] = $value;
                         }
                     }
                 }
+
                 if (!isset($route['action'])) {
                     $route['action'] = 'index';
-                    $route['view'] = $route['action'];
                 }
 
                 $this->route = $route;
+                $this->container->set('route', $route);
 
                 return true;
             }

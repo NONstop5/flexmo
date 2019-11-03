@@ -5,6 +5,7 @@ namespace Flexmo;
 
 
 use App\Configs\AppConfig;
+use App\Database;
 use Exception;
 use Tracy\Debugger;
 
@@ -14,8 +15,10 @@ class Core
     protected $appConfig;
     /** @var array Текущий маршрут */
     protected $route;
+    /** @var Container Контейнер */
+    protected $container;
 
-    public function __construct(array $appConfig)
+    public function __construct(AppConfig $appConfig)
     {
         $this->appConfig = $appConfig;
 
@@ -38,7 +41,7 @@ class Core
      */
     private function initContainer()
     {
-        new Container(AppConfig::getAppConfig());
+        $this->container = new Container($this->appConfig);
     }
 
     /**
@@ -48,7 +51,7 @@ class Core
      */
     private function initRouter()
     {
-        $router = new Router($this->appConfig);
+        $router = $this->container->get(Router::class);
         $this->route = $router->dispatch();
         $this->checkController();
     }
@@ -58,7 +61,7 @@ class Core
      */
     private function initDatabase()
     {
-        new \App\Database(AppConfig::getDbConfig());
+        $this->container->get(Database::class);
     }
 
     /**
@@ -72,12 +75,12 @@ class Core
             '/',
             '\\',
             str_replace(
-                dirname($this->appConfig[AppConfig::APP_ROOT]) . '/',
+                dirname($this->appConfig->getAppConfig()[AppConfig::APP_ROOT]) . '/',
                 '',
-                $this->appConfig[AppConfig::CONTROLLER_PATH]
+                $this->appConfig->getAppConfig()[AppConfig::CONTROLLER_PATH]
             )
         );
-        $controllerClassName = $controllersNamespace . $this->route['controller'];
+        $controllerClassName = $controllersNamespace . $this->route['controller'] . 'Controller';
 
         if (class_exists($controllerClassName)) {
             $this->invokeController($controllerClassName);
@@ -94,11 +97,11 @@ class Core
      */
     private function invokeController($controllerClassName)
     {
-        $controllerObject = new $controllerClassName($this->route, $this->appConfig);
-        $controllerAction = $this->route['view'] . $this->appConfig[AppConfig::ACTION_POSTFIX];
+        $controllerObject = $this->container->get($controllerClassName);
+        $controllerAction = $this->route['action'] . $this->appConfig->getAppConfig()[AppConfig::ACTION_POSTFIX];
 
         if (method_exists($controllerObject, $controllerAction)) {
-            $controllerObject->$controllerAction();
+            echo $controllerObject->$controllerAction();
         } else {
             throw new Exception('Не найден Action, соответствующий маршруту!');
         }
