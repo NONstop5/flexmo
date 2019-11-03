@@ -35,11 +35,6 @@ class Router
         $this->routes[$regexp] = $route;
     }
 
-    public function getRoute()
-    {
-        return $this->route;
-    }
-
     /**
      * Добавляет маршруты по-умолчанию
      */
