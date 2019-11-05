@@ -2,10 +2,9 @@
 
 use App\App;
 use App\Configs\AppConfig;
+use Flexmo\Container;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-
-(new App((new AppConfig())));
-
-//Router::add('^page/(?P<action>[a-z-]+)/(?P<alias>[a-z-]+)$', ['controller' => 'Page']);
+$container = new Container((new AppConfig()));
+$container->get(App::class)->start();
