@@ -1,27 +1,24 @@
 <?php
 
-
 namespace Flexmo;
-
 
 use App\Configs\AppConfig;
 use App\Database;
 use Exception;
 use Tracy\Debugger;
 
-class Core
+abstract class Core
 {
     /** @var array Массив конфигурации приложения */
     protected $appConfig;
     /** @var array Текущий маршрут */
     protected $route;
+    protected $router;
     /** @var Container Контейнер */
     protected $container;
 
-    public function __construct(AppConfig $appConfig)
+    public function start()
     {
-        $this->appConfig = $appConfig;
-
         $this->initDebugger();
         $this->initContainer();
         $this->initRouter();
@@ -41,7 +38,7 @@ class Core
      */
     private function initContainer()
     {
-        $this->container = new Container($this->appConfig);
+        $this->container->get(AppConfig::class);
     }
 
     /**
@@ -49,10 +46,12 @@ class Core
      *
      * @throws Exception
      */
-    private function initRouter()
+    protected function initRouter()
     {
-        $router = $this->container->get(Router::class);
-        $this->route = $router->dispatch();
+        /** @var Router $router */
+        $this->router->addRoutes();
+        $this->router->addDefaultRoutes();
+        $this->route = $this->router->dispatch();
         $this->checkController();
     }
 
@@ -61,7 +60,7 @@ class Core
      */
     private function initDatabase()
     {
-        $this->container->get(Database::class);
+        $database = $this->container->get(Database::class);
     }
 
     /**
@@ -69,7 +68,7 @@ class Core
      *
      * @throws Exception
      */
-    private function checkController()
+    protected function checkController()
     {
         $controllersNamespace = str_replace(
             '/',
@@ -85,7 +84,7 @@ class Core
         if (class_exists($controllerClassName)) {
             $this->invokeController($controllerClassName);
         } else {
-            throw new Exception('Не найден Controller, соответствующий маршруту!');
+            throw new Exception('Не найден контроллер ' . $controllerClassName . ', соответствующий маршруту!');
         }
     }
 
