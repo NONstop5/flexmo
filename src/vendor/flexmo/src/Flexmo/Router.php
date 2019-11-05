@@ -5,7 +5,7 @@ namespace Flexmo;
 use App\Configs\AppConfig;
 use Exception;
 
-class Router
+abstract class Router
 {
     /** @var string Адресная строка */
     protected $url;
@@ -16,12 +16,10 @@ class Router
     protected $appConfig;
     protected $container;
 
-    public function __construct(Container $container)
+    public function __construct(AppConfig $appConfig)
     {
-        $this->container = $container;
-        $this->appConfig = $this->container->get(AppConfig::class)->getAppConfig();
+        $this->appConfig = $appConfig->getAppConfig();
         $this->url = rtrim(substr($_SERVER['REQUEST_URI'], 1), '/');
-        $this->addDefaultRoutes();
     }
 
     /**
@@ -30,20 +28,18 @@ class Router
      * @param $regexp
      * @param array $route
      */
-    private function addRoute($regexp, $route = [])
+    protected function addRoute($regexp, $route = [])
     {
         $this->routes[$regexp] = $route;
     }
 
     /**
-     * Добавляет маршруты по-умолчанию
+     * Добавляет маршруты в таблицу маршрутов
      */
-    private function addDefaultRoutes()
+    abstract public function addRoutes();
+
+    public function addDefaultRoutes()
     {
-        $this->addRoute('^$', [
-            'controller' => $this->appConfig[AppConfig::DEFAULT_CONTROLLER_NAME],
-            'action' => $this->appConfig[AppConfig::DEFAULT_ACTION_NAME]
-        ]);
         $this->addRoute('^(?P<controller>[a-z-]+)\/?(?P<action>[a-z-]+)?$');
     }
 
@@ -55,7 +51,7 @@ class Router
     private function isMatchRoute()
     {
         foreach ($this->routes as $pattern => $route) {
-            if (preg_match("#$pattern#i", $this->url, $matches)) {
+            if (preg_match("#^$pattern$#i", $this->url, $matches)) {
                 foreach ($matches as $key => $value) {
                     if (is_string($key)) {
                         if ($key === 'controller') {
@@ -71,7 +67,6 @@ class Router
                 }
 
                 $this->route = $route;
-                $this->container->set('route', $route);
 
                 return true;
             }
