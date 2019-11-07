@@ -4,22 +4,23 @@ namespace Flexmo;
 
 use App\Configs\AppConfig;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
 
-abstract class Router
+// TODO Это временный самописный роутер, который будет заменен на \FastRoute\Dispatcher
+class Router
 {
-    /** @var string Адресная строка */
-    protected $url;
     /** @var array Таблица маршрутов */
     protected $routes = [];
     /** @var array Текущий маршрут */
     protected $route = [];
     protected $appConfig;
     protected $container;
+    protected $request;
 
-    public function __construct(AppConfig $appConfig)
+    public function __construct(AppConfig $appConfig, Request $request)
     {
         $this->appConfig = $appConfig->getAppConfig();
-        $this->url = rtrim(substr($_SERVER['REQUEST_URI'], 1), '/');
+        $this->request = $request;
     }
 
     /**
@@ -33,13 +34,12 @@ abstract class Router
         $this->routes[$regexp] = $route;
     }
 
-    /**
-     * Добавляет маршруты в таблицу маршрутов
-     */
-    abstract public function addRoutes();
-
     public function addDefaultRoutes()
     {
+        $this->addRoute('', [
+            'controller' => $this->appConfig[AppConfig::DEFAULT_CONTROLLER_NAME],
+            'action' => $this->appConfig[AppConfig::DEFAULT_ACTION_NAME]
+        ]);
         $this->addRoute('^(?P<controller>[a-z-]+)\/?(?P<action>[a-z-]+)?$');
     }
 
@@ -50,8 +50,10 @@ abstract class Router
      */
     private function isMatchRoute()
     {
+        $url = rtrim(substr($this->request->getPathInfo(), 1), '/');
+
         foreach ($this->routes as $pattern => $route) {
-            if (preg_match("#^$pattern$#i", $this->url, $matches)) {
+            if (preg_match("#^$pattern$#i", $url, $matches)) {
                 foreach ($matches as $key => $value) {
                     if (is_string($key)) {
                         if ($key === 'controller') {

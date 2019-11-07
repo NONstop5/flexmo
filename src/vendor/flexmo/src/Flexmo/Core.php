@@ -3,24 +3,32 @@
 namespace Flexmo;
 
 use App\Configs\AppConfig;
-use App\Database;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
 use Tracy\Debugger;
 
 abstract class Core
 {
-    /** @var array Массив конфигурации приложения */
-    protected $appConfig;
     /** @var array Текущий маршрут */
     protected $route;
-    protected $router;
-    /** @var Container Контейнер */
+    protected $appConfig;
     protected $container;
 
+    public function __construct(AppConfig $appConfig, \DI\Container $container)
+    {
+        $this->container = $container;
+        $this->appConfig = $appConfig;
+    }
+
+    /**
+     * Запуск приложения
+     *
+     * @throws Exception
+     */
     public function start()
     {
         $this->initDebugger();
-        $this->initContainer();
+        //$this->initContainer();
         $this->initRouter();
         $this->initDatabase();
     }
@@ -35,10 +43,12 @@ abstract class Core
 
     /**
      * Инициализируем контейнер
+     *
+     * @throws Exception
      */
     private function initContainer()
     {
-        $this->container->get(AppConfig::class);
+        //Container();
     }
 
     /**
@@ -48,19 +58,24 @@ abstract class Core
      */
     protected function initRouter()
     {
-        /** @var Router $router */
-        $this->router->addRoutes();
-        $this->router->addDefaultRoutes();
-        $this->route = $this->router->dispatch();
+        $request = Request::createFromGlobals();
+        $this->container->set(Request::class, $request);
+        $router = $this->container->get(Router::class);
+        $router->addDefaultRoutes();
+        $this->route = $router->dispatch();
         $this->checkController();
     }
 
     /**
      * Инициализируем БД
+     *
+     * @throws Exception
      */
     private function initDatabase()
     {
+        /** @var Database $database */
         $database = $this->container->get(Database::class);
+        $database->make();
     }
 
     /**
