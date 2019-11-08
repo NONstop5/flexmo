@@ -5,6 +5,7 @@
             <?php echo $treePhp; ?>
         </div>
     </div>
+    <!-- TODO Как-то вдруг пришло в голову простое и быстрое решение -->
     <div class="card">
         <div class="card-header">Вариант 2 (CSS - лайф-хак)</div>
         <div class="card-body">
@@ -29,6 +30,7 @@
                     Получить данные из БД
                 </button>
             </div>
+            <!-- TODO Вариант на JS, с использованием JQuery-библиотеки, просто для разнообразия -->
             <div class="hummingbird-treeview-converter">
                 <li>Warner Bros.</li>
                 <li>-Goodfellas</li>
