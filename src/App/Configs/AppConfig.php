@@ -24,7 +24,7 @@ class AppConfig
             'dbDriver' => 'mysql',
             'dbHost' => 'localhost',
             'dbPort' => '3306',
-            'dbName' => 'marlin-test-project-1',
+            'dbName' => 'tree_data',
             'dbUser' => 'root',
             'dbPassword' => '',
             'dbCharset' => 'utf8'
