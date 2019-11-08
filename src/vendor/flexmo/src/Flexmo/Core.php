@@ -4,7 +4,6 @@ namespace Flexmo;
 
 use App\Configs\AppConfig;
 use Exception;
-use Symfony\Component\HttpFoundation\Request;
 use Tracy\Debugger;
 
 abstract class Core
@@ -12,12 +11,20 @@ abstract class Core
     /** @var array Текущий маршрут */
     protected $route;
     protected $appConfig;
+    protected $router;
+    protected $database;
     protected $container;
 
-    public function __construct(AppConfig $appConfig, \DI\Container $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        AppConfig $appConfig,
+        Router $router,
+        Database $database,
+        \DI\Container $container
+    ) {
         $this->appConfig = $appConfig;
+        $this->router = $router;
+        $this->database = $database;
+        $this->container = $container;
     }
 
     /**
@@ -28,7 +35,6 @@ abstract class Core
     public function start()
     {
         $this->initDebugger();
-        //$this->initContainer();
         $this->initRouter();
         $this->initDatabase();
     }
@@ -42,27 +48,14 @@ abstract class Core
     }
 
     /**
-     * Инициализируем контейнер
-     *
-     * @throws Exception
-     */
-    private function initContainer()
-    {
-        //Container();
-    }
-
-    /**
      * Инициализируем роутер
      *
      * @throws Exception
      */
     protected function initRouter()
     {
-        $request = Request::createFromGlobals();
-        $this->container->set(Request::class, $request);
-        $router = $this->container->get(Router::class);
-        $router->addDefaultRoutes();
-        $this->route = $router->dispatch();
+        $this->router->addDefaultRoutes();
+        $this->route = $this->router->dispatch();
         $this->checkController();
     }
 
@@ -73,9 +66,7 @@ abstract class Core
      */
     private function initDatabase()
     {
-        /** @var Database $database */
-        $database = $this->container->get(Database::class);
-        $database->make();
+        $this->database->makePdo();
     }
 
     /**

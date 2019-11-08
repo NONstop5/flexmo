@@ -2,34 +2,26 @@
 
 namespace Flexmo;
 
+use App\Configs\AppConfig;
 use PDO;
 
-abstract class Database
+class Database
 {
-    protected $pdo;
+    /** @var PDO $pdo */
+    public $pdo;
     protected $dbConfig;
+    protected $container;
 
-    public function __construct(array $dbConfig)
+    public function __construct(AppConfig $appConfig, Container $container)
     {
-        $this->dbConfig = $dbConfig;
+        $this->dbConfig = $appConfig->getDbConfig();
+        $this->container = $container;
     }
 
     /**
-     * Возвращает объект PDO
-     *
-     * @return mixed
+     * Создает объект PDO записываем в свойство объекта
      */
-    public function pdo()
-    {
-        return $this->pdo;
-    }
-
-    /**
-     * Создает объект PDO
-     *
-     * @return PDO
-     */
-    private function make(): PDO
+    public function makePdo()
     {
         $dbDriver = $this->dbConfig['dbDriver'];
         $dbHost = $this->dbConfig['dbHost'];
@@ -44,7 +36,8 @@ abstract class Database
         ];
 
         $dsn = "$dbDriver:host=$dbHost;port=$dbPort;dbname=$dbName;charset=$dbCharset";
-
         $this->pdo = new PDO($dsn, $dbUser, $dbPassword, $dbOptions);
+        // TODO Разобраться как создать объект с параметрами в конструкторе и положить его в контейнер
+        //$this->pdoConnection = $this->container->make(PDO::class, [$dsn, $dbUser, $dbPassword, $dbOptions]);
     }
 }

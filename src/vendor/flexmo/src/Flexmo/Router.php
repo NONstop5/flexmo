@@ -17,8 +17,10 @@ class Router
     protected $container;
     protected $request;
 
-    public function __construct(AppConfig $appConfig, Request $request)
-    {
+    public function __construct(
+        AppConfig $appConfig,
+        Request $request
+    ) {
         $this->appConfig = $appConfig->getAppConfig();
         $this->request = $request;
     }
