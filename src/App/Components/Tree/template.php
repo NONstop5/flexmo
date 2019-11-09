@@ -31,21 +31,7 @@
                 </button>
             </div>
             <!-- TODO Вариант на JS, с использованием JQuery-библиотеки, просто для разнообразия -->
-            <div class="hummingbird-treeview-converter">
-                <li>Warner Bros.</li>
-                <li>-Goodfellas</li>
-                <li>--Robert De Niro</li>
-                <li>--Joe Pesci</li>
-                <li>-The Shawshank Redemption</li>
-                <li>--Tim Robbins</li>
-                <li>--Morgan Freeman</li>
-                <li>Paramount</li>
-                <li>-The Untouchables</li>
-                <li>--Robert De Niro</li>
-                <li>--Kevin Costner</li>
-                <li>-Forrest Gump</li>
-                <li>--Tom Hanks</li>
-                <li>--Robin Wright</li>
+            <div id="tree">
             </div>
         </div>
     </div>
