@@ -1,0 +1,45 @@
+#tree {
+    list-style-type: none;
+    color: #666666;
+}
+
+#tree [data-tree-click] {
+    cursor: pointer;
+    color: #999999;
+    font-weight: bold;
+}
+
+#tree .closed [data-tree-click] {
+    padding-left: 12px;
+    background-image: url('plus_minus.gif');
+    background-repeat: no-repeat;
+    background-position: 0 6px;
+    color: #555555 !important;
+}
+
+#tree .open [data-tree-click] {
+    padding-left: 12px;
+    background-image: url('plus_minus.gif');
+    background-repeat: no-repeat;
+    background-position: 0 -94px;
+    color: #555555 !important;
+}
+
+#tree .end span {
+    cursor: text;
+    padding-left: 12px;
+    color: #bbbbbb;
+}
+
+#tree .data-tree-level1 {
+    margin-left: 25px;
+}
+
+#tree .data-tree-level2 {
+    margin-left: 50px;
+}
+
+#tree .data-tree-level3 {
+    margin-left: 75px;
+}
+
