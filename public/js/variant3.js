@@ -1,3 +1,4 @@
+// TODO Тут специально использован синтаксис ES6
 (function () {
   const $buttonGetData = $(`.button-get-data`);
   const $tree = $(`#tree`);
@@ -7,14 +8,13 @@
    * @param data
    */
   const generateTree = (data) => {
-    let htmlResult = data.reduce((result, dataItem) => {
+    $tree.html(data.reduce((result, dataItem) => {
       return result + `
         <li data-tree-branch="${dataItem.position}">
             <span data-tree-click="${dataItem.position}">${dataItem.position} - ${dataItem.title} - ${dataItem.value}</span>
         </li>
       `;
-    }, '');
-    $tree.html(htmlResult);
+    }, ''));
   };
 
   /**

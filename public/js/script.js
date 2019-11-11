@@ -1,3 +1,4 @@
+// TODO Тут специально использован синтаксис ES5
 (function () {
   var $butonDbSave = $('.button-db-save');
   var $butonDbSaveJson = $('.button-db-save_json');
