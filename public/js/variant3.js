@@ -22,7 +22,7 @@
    */
   const getAjaxData = () => {
     $.ajax({
-      method: `post`,
+      method: `get`,
       url: `/tree/get-json-data`,
       dataType: `json`,
       success(response) {
